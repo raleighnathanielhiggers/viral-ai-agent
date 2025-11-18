@@ -1,0 +1,29 @@
+name: Daily Viral Scan
+on:
+  schedule:
+    - cron: '0 12 * * *'   # Every day at 12:00 UTC (7 AM EST / 4 AM PST)
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Run viral scanner
+        env:
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python viral_scanner.py
+        
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: todays-viral-tweets
+          path: viral_results.csv
