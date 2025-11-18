@@ -13,7 +13,7 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 client = Groq(api_key=GROQ_API_KEY)
 
 def get_viral_posts():
-    query = "(min_faves:1000 -min_faves:10000) -is:retweet lang:en"  # Viral-ish, English, no RTs
+    query = "min_faves:500 -is:retweet lang:en" # Viral-ish, English, no RTs
     url = "https://api.twitter.com/2/tweets/search/recent"
     headers = {"Authorization": f"Bearer {BEARER_TOKEN}"}
     params = {
