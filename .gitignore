@@ -1,0 +1,5 @@
+bearer.txt
+groq_key.txt
+venv/
+__pycache__/
+*.csv
