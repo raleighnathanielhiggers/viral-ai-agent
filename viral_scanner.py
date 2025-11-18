@@ -5,10 +5,10 @@ import os  # For loading keys securely
 
 # Load your keys (replace paths if needed)
 with open('bearer.txt', 'r') as f:
-    BEARER_TOKEN = f.read().strip()
+    BEARER_TOKEN = os.getenv('X_BEARER_TOKEN')
 
 with open('groq_key.txt', 'r') as f:
-    GROQ_API_KEY = f.read().strip()
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 
 # Set up Groq AI
 client = Groq(api_key=GROQ_API_KEY)
