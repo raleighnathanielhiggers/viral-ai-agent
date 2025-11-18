@@ -13,7 +13,7 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 client = Groq(api_key=GROQ_API_KEY)
 
 def get_viral_posts():
-    query = "min_faves:500 -is:retweet lang:en" # Viral-ish, English, no RTs
+    query = "min_faves:300 max_followers:10000 -is:retweet lang:en" # Viral-ish, English, no RTs
     url = "https://api.twitter.com/2/tweets/search/recent"
     headers = {"Authorization": f"Bearer {BEARER_TOKEN}"}
     params = {
@@ -61,6 +61,15 @@ def analyze_why_viral(text):
 
 # Run the scan
 df = get_viral_posts()
+if df.empty:
+    # Fallback: Save empty CSV with note
+    pd.DataFrame({'note': ['No matching tweets found—try manual run later or check query.']}).to_csv('viral_results.csv', index=False)
+    print("No viral posts found this run—API might be quiet. Check logs.")
+else:
+    # Original code: Analyze and save
+    df['analysis'] = df['text'].apply(analyze_why_viral)
+    df.to_csv('viral_results.csv', index=False)
+    print(df[['user', 'likes', 'text', 'analysis']].head(10))
 if not df.empty:
     df['analysis'] = df['text'].apply(analyze_why_viral)
     df.to_csv('viral_results.csv', index=False)  # Save to file
